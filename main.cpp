@@ -347,7 +347,7 @@ public:
 class BotPlayer : public Player {
 public:
     BotPlayer(MiVector<Entity*>* entitiesPtr, int* bulletsRef) : Player(entitiesPtr, bulletsRef) {
-        acceleration = 1000.0f; friction = 0.75f; invulnerabilityTime = 0.0f;
+        acceleration = 800.0f; friction = 0.75f; invulnerabilityTime = 0.0f;
     }
 
     void update() override {
@@ -372,7 +372,7 @@ public:
             float timeToHit = minDistance / 1100.0f; //aproxima el tiempo en el que el disparo llegara con velocidad de la bala
             float fx = target->x + (ast->velocity.x * timeToHit) + target->width/2; //predice direcciones del asteroide
             float fy = target->y + (ast->velocity.y * timeToHit) + target->height/2;
-            float desiredAngle = atan2(fy - (y+height/2), fx - (x+width/2)) * RAD2DEG; //obtiene el angulo deseado
+            float desiredAngle = atan2(fy - (y+height/2), fx - (x+width/2)) * RAD2DEG; //obtiene el angulo deseado con arcotangente de dy/dx
             if (desiredAngle < 0) desiredAngle += 360;
 
             float diff = desiredAngle - rotation;
@@ -380,16 +380,16 @@ public:
 
             if (diff > 0) rotation += 300.0f * dt; else rotation -= 300.0f * dt; //rota hacia el angulo deseado
 
-            if (abs(diff) < 30.0f && (rand() % 100) < 30) shoot(); //si esta alineado a ma so menos 30 grados, dispara un 30% de los frames
+            if (abs(diff) < 30.0f && (rand() % 100) < 30) shoot(); //si esta alineado a mas o menos 30 grados, dispara un 30% de los frames
 
-            if (minDistance < 180.0f) {
+            if (minDistance < 100.0f) { //Si el asteroide esta muy cerca, el Bot acelera e el sentido opuesto al angulo deseado
                 velocity.x -= cos(desiredAngle * DEG2RAD) * acceleration * dt;
                 velocity.y -= sin(desiredAngle * DEG2RAD) * acceleration * dt;
-            } else {
+            } else { //Si no esta en peligro, disminuye de a pocos, simulando inercia
                 velocity.x *= friction; velocity.y *= friction;
             }
         }
-        x += velocity.x * dt; y += velocity.y * dt;
+        x += velocity.x * dt; y += velocity.y * dt; //actualizacion de pos y screenwrapping
         if (x > SCREEN_WIDTH) x = 0; if (x < 0) x = SCREEN_WIDTH;
         if (y > SCREEN_HEIGHT) y = 0; if (y < 0) y = SCREEN_HEIGHT;
     }
