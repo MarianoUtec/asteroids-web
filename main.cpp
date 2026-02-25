@@ -347,7 +347,7 @@ public:
 class BotPlayer : public Player {
 public:
     BotPlayer(MiVector<Entity*>* entitiesPtr, int* bulletsRef) : Player(entitiesPtr, bulletsRef) {
-        acceleration = 1100.0f; friction = 0.75f; invulnerabilityTime = 0.0f;
+        acceleration = 1000.0f; friction = 0.75f; invulnerabilityTime = 0.0f;
     }
 
     void update() override {
